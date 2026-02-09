@@ -13,7 +13,6 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         }),
     });
-    gtest.linkLibC();
     gtest.linkLibCpp();
     gtest.root_module.addCSourceFile(.{
         .file = gtest_dep.path("googletest/src/gtest-all.cc"),
@@ -31,7 +30,6 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         }),
     });
-    gtest_main.linkLibC();
     gtest_main.linkLibCpp();
     gtest_main.root_module.addCSourceFile(.{
         .file = gtest_dep.path("googletest/src/gtest_main.cc"),
