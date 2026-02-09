@@ -41,4 +41,68 @@ pub fn build(b: *std.Build) void {
     gtest_main.root_module.addIncludePath(gtest_dep.path("googletest"));
     gtest_main.installHeadersDirectory(gtest_dep.path("googletest/include"), ".", .{});
     b.installArtifact(gtest_main);
+
+    const samples_exe = b.addExecutable(.{
+        .name = "gtest_samples",
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    samples_exe.addCSourceFiles(.{
+        .root = gtest_dep.path("googletest/samples"),
+        .files = &.{
+            "sample1_unittest.cc",
+            "sample1.cc",
+            "sample2_unittest.cc",
+            "sample2.cc",
+            "sample3_unittest.cc",
+            "sample4_unittest.cc",
+            "sample4.cc",
+            "sample5_unittest.cc",
+            "sample6_unittest.cc",
+            "sample7_unittest.cc",
+            "sample8_unittest.cc",
+        },
+    });
+    samples_exe.linkLibrary(gtest);
+    samples_exe.linkLibrary(gtest_main);
+    b.installArtifact(samples_exe);
+
+    // Samples 9 and 10 define their own entrypoint.
+    const sample9_exe = b.addExecutable(.{
+        .name = "gtest_sample9",
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    sample9_exe.addCSourceFiles(.{
+        .root = gtest_dep.path("googletest/samples"),
+        .files = &.{
+            "sample9_unittest.cc",
+        },
+    });
+    sample9_exe.linkLibrary(gtest);
+    b.installArtifact(sample9_exe);
+
+    const sample10_exe = b.addExecutable(.{
+        .name = "gtest_sample10",
+        .root_module = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+        }),
+    });
+    sample10_exe.addCSourceFiles(.{
+        .root = gtest_dep.path("googletest/samples"),
+        .files = &.{"sample10_unittest.cc"},
+    });
+    sample10_exe.linkLibrary(gtest);
+    b.installArtifact(sample10_exe);
+
+    const samples_step = b.step("samples", "Build the sample tests");
+    samples_step.dependOn(&samples_exe.step);
+    samples_step.dependOn(&sample9_exe.step);
+    samples_step.dependOn(&sample10_exe.step);
+    samples_step.dependOn(b.getInstallStep());
 }
