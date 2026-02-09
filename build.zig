@@ -16,7 +16,7 @@ pub fn build(b: *std.Build) void {
     gtest.linkLibCpp();
     gtest.root_module.addCSourceFile(.{
         .file = gtest_dep.path("googletest/src/gtest-all.cc"),
-        .flags = &.{},
+        .flags = &.{"-std=c++17"},
     });
     gtest.root_module.addIncludePath(gtest_dep.path("googletest/include"));
     gtest.root_module.addIncludePath(gtest_dep.path("googletest"));
@@ -33,7 +33,7 @@ pub fn build(b: *std.Build) void {
     gtest_main.linkLibCpp();
     gtest_main.root_module.addCSourceFile(.{
         .file = gtest_dep.path("googletest/src/gtest_main.cc"),
-        .flags = &.{},
+        .flags = &.{"-std=c++17"},
     });
     gtest_main.root_module.addIncludePath(gtest_dep.path("googletest/include"));
     gtest_main.root_module.addIncludePath(gtest_dep.path("googletest"));
